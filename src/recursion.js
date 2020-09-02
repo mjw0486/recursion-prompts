@@ -628,7 +628,6 @@ var tagCount = function(tag, node) {
     }
   }
 
-  // console.log(document.querySelector('html'));
 };
 
 // 38. Write a function for binary search.
@@ -636,6 +635,25 @@ var tagCount = function(tag, node) {
 // binarySearch(array, 5) // 5
 // https://www.khanacademy.org/computing/computer-science/algorithms/binary-search/a/binary-search
 var binarySearch = function(array, target, min, max) {
+  if (min === undefined) {
+    min = 0;
+  }
+  if (max === undefined) {
+    max = array.length - 1;
+  }
+
+  var attempt = Math.floor((max + min) / 2);
+
+  if (max <= min && array[attempt] !== target) {
+    return null;
+  } else if (array[attempt] === target) {
+    return attempt;
+  } else if (array[attempt] < target) {
+    return binarySearch(array, target, attempt + 1,max);
+  } else if (array[attempt] > target) {
+    return binarySearch(array, target, min, attempt - 1);
+  }
+
 };
 
 // 39. Write a merge sort function.
