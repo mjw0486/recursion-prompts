@@ -71,15 +71,30 @@ var sumBelow = function(n) {
 // 6. Get the integers within a range (x, y).
 // range(2,9); // [3,4,5,6,7,8]
 var range = function(x, y) {
-  if (x - y >= -1 && x - y <= 1) {
-    return [];
-  } else if (x < y) {
-    return [x + 1].concat(range(x + 1, y))
-  } else if (x > y) {
-    return [x - 1].concat(range(x - 1, y))
-  }
-};
+    let concatArray = function(arr1, arr2) {
+      if (Array.isArray(arr1) && Array.isArray(arr2)) {
+        let result = [];
+        for (let item of arr1) {
+          result.push(item);
+        }
+        for (let item of arr2) {
+          result.push(item);
+        }
+        return result;
+      } else {
+        throw SyntaxError('Cannot concat unless both inputs are arrays.');
+      }
+    }
 
+    if (x - y >= -1 && x - y <= 1) {
+      return [];
+    } else if (x > y) {
+      return concatArray([x - 1], range(x - 1, y));
+    } else if (x < y) {
+      return concatArray([x + 1], range(x + 1, y));
+    }
+};
+console.log(range(2, 8))
 // 7. Compute the exponent of a number.
 // The exponent of a number says how many times the base number is used as a factor.
 // 8^2 = 8 x 8 = 64. Here, 8 is the base and 2 is the exponent.
@@ -610,23 +625,21 @@ var numToText = function(str) {
 
 // 37. Return the number of times a tag occurs in the DOM.
 var tagCount = function(tag, node) {
+
   node = node || document.querySelector('html');
 
-  if (node.childNodes.length === 0) {
-    if (node.tagName === tag) {
-      return 1;
-    } else {
-      return 0;
-    }
-  } else {
+  let result = 0;
+
+  if (node.tagName !== undefined && node.tagName.toLowerCase() === tag) {
+    result += 1;
+  }
+  if (node.hasChildNodes()) {
     for (let i = 0; i < node.childNodes.length; i++) {
-      if (node.childNodes[i].tagName === tag) {
-        return 1 + tagCount(tag, node.childNodes[i]);
-      } else {
-        return tagCount(tag, node.childNodes[i]);
-      }
+      result += tagCount(tag, node.childNodes[i]);
     }
   }
+
+  return result;
 
 };
 
@@ -698,4 +711,30 @@ var mergeSort = function(array) {
 // console.log(obj2); // {a:1,b:{bb:{bbb:2}},c:3}
 // obj1 === obj2 // false
 var clone = function(input) {
+
+  let arrayClone = function() {
+    let result = [];
+    for (let item of input) {
+      result.push(clone(item));
+    }
+    return result;
+  }
+  let objectClone = function() {
+    let result = {};
+    for (let item in input) {
+      result[item] = clone(input[item]);
+    }
+    return result;
+  }
+  let cloneController = function() {
+    if (Array.isArray(input)) {
+      return arrayClone();
+    } else if (typeof input === 'object' && typeof input !== null) {
+      return objectClone();
+    } else {
+      return input;
+    }
+  }
+  return cloneController(input)
+
 };
